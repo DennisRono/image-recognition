@@ -95,6 +95,199 @@ class ArcFaceModel(nn.Module):
         output *= self.scale
         
         return output, embeddings
+    
+class ConvNeXtV2(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'convnextv2_{model_size}.fcmae_ft_in22k_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.2),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+    
+class DeiTDistilled(nn.Module):
+    def __init__(self, num_classes: int = 1000, pretrained: bool = True):
+        super().__init__()
+        self.backbone = timm.create_model('deit3_base_patch16_224', pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class SwinTransformer(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'swin_{model_size}_patch4_window7_224'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.2),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class MaxViT(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'maxvit_{model_size}_tf_224'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.2),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class CoAtNet(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "0", pretrained: bool = True):
+        super().__init__()
+        model_name = f'coatnet_{model_size}_224'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.2),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+    
+class DINOv2(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'vit_{model_size}_patch14_dinov2.lvd142m'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class EVA02(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'eva02_{model_size}_patch14_448.mim_in22k_ft_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+    
+class MobileViT(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "small", pretrained: bool = True):
+        super().__init__()
+        model_name = f'mobilevit_{model_size}.cvnets_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class FastViT(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "t8", pretrained: bool = True):
+        super().__init__()
+        model_name = f'fastvit_{model_size}.apple_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class NFNet(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "f0", pretrained: bool = True):
+        super().__init__()
+        model_name = f'nfnet_{model_size}'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.Dropout(0.2),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class CvT(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "13", pretrained: bool = True):
+        super().__init__()
+        model_name = f'cvt_{model_size}.fb_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class BEiT(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_size: str = "base", pretrained: bool = True):
+        super().__init__()
+        model_name = f'beit_{model_size}_patch16_224.in22k_ft_in22k_in1k'
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
+class CLIPVisionModel(nn.Module):
+    def __init__(self, num_classes: int = 1000, model_name: str = "vit_base_patch16_clip_224", pretrained: bool = True):
+        super().__init__()
+        self.backbone = timm.create_model(model_name, pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.LayerNorm(self.backbone.num_features),
+            nn.Dropout(0.1),
+            nn.Linear(self.backbone.num_features, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+
 
 def create_model(model_name: str, num_classes: int, **kwargs) -> nn.Module:
     models = {
@@ -102,10 +295,32 @@ def create_model(model_name: str, num_classes: int, **kwargs) -> nn.Module:
         "efficientnet_b3": EfficientNetB3,
         "vit_hybrid_384": ViTHybrid384,
         "internvl2": InternVL2,
-        "arcface": ArcFaceModel
+        "arcface": ArcFaceModel,
+        
+        # Vision Transformers
+        "convnext_v2": ConvNeXtV2,
+        "deit_distilled": DeiTDistilled,
+        "swin_transformer": SwinTransformer,
+        "maxvit": MaxViT,
+        "coatnet": CoAtNet,
+        
+        # Self-Supervised Models
+        "dinov2": DINOv2,
+        "eva02": EVA02,
+        "beit": BEiT,
+        
+        # Efficient Models
+        "mobilevit": MobileViT,
+        "fastvit": FastViT,
+        "nfnet": NFNet,
+        "cvt": CvT,
+        
+        # Multimodal
+        "clip_vision": CLIPVisionModel,
     }
     
     if model_name not in models:
-        raise ValueError(f"Model {model_name} not supported")
+        raise ValueError(f"Model {model_name} not supported. Available models: {list(models.keys())}")
     
     return models[model_name](num_classes=num_classes, **kwargs)
+
