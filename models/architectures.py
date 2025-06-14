@@ -7,6 +7,22 @@ from typing import Optional, Dict, Any
 class EfficientNetL3(nn.Module):
     def __init__(self, num_classes: int = 1000, pretrained: bool = True):
         super().__init__()
+        self.backbone = timm.create_model('efficientnet_l3', pretrained=pretrained, num_classes=0)
+        self.classifier = nn.Sequential(
+            nn.Dropout(0.3),
+            nn.Linear(self.backbone.num_features, 512),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(512, num_classes)
+        )
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        features = self.backbone(x)
+        return self.classifier(features)
+    
+class EfficientNetB3(nn.Module):
+    def __init__(self, num_classes: int = 1000, pretrained: bool = True):
+        super().__init__()
         self.backbone = timm.create_model('efficientnet_b3', pretrained=pretrained, num_classes=0)
         self.classifier = nn.Sequential(
             nn.Dropout(0.3),
@@ -83,6 +99,7 @@ class ArcFaceModel(nn.Module):
 def create_model(model_name: str, num_classes: int, **kwargs) -> nn.Module:
     models = {
         "efficientnet_l3": EfficientNetL3,
+        "efficientnet_b3": EfficientNetB3,
         "vit_hybrid_384": ViTHybrid384,
         "internvl2": InternVL2,
         "arcface": ArcFaceModel

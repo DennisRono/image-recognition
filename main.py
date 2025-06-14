@@ -113,7 +113,7 @@ def train_model(args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--task', choices=['classification', 'face_recognition'], default='classification')
-    parser.add_argument('--model_name', default='efficientnet_l3')
+    parser.add_argument('--model_name', default='efficientnet_b3')
     parser.add_argument('--experiment_name', default='sota_experiment')
     parser.add_argument('--use_wandb', action='store_true')
     parser.add_argument('--use_focal_loss', action='store_true')
